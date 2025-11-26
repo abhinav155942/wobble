@@ -208,7 +208,7 @@ const AgentChat = () => {
             </div>
           ) : activeTab === 'knowledge' ? (
             <div className="h-full overflow-y-auto">
-              <KnowledgeBase agent={agent} />
+              {agent && <KnowledgeBase agent={agent} />}
             </div>
           ) : (
             <ChatInterface
