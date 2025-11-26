@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, StopCircle } from "lucide-react";
+import { Sparkles, StopCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ThinkingIndicator } from "./ThinkingIndicator";
 import { CodeBlock } from "./chat/CodeBlock";
 import { MessageActions } from "./chat/MessageActions";
 import { TypingText } from "@/components/ui/typing-text";
@@ -356,21 +355,16 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
                             : "bg-muted/50 border border-border/50"
                         }`}
                       >
-                        {message.role === "assistant" && message.thinkingSteps && message.thinkingSteps.length > 0 && (
-                          <ThinkingIndicator
-                            steps={message.thinkingSteps}
-                            isActive={message.isThinking || false}
-                            elapsedTime={message.elapsedTime}
-                            compact
-                          />
-                        )}
-                        
                         {message.role === "user" ? (
                           <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
                             {message.content}
                           </p>
+                        ) : !message.content ? (
+                          <div className="flex items-center gap-2 text-muted-foreground py-1">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span className="text-[15px] italic">Thinking...</span>
+                          </div>
                         ) : (
-                          message.content && (
                             <div>
                               {isStreamingThis ? (
                                 <div className="prose prose-sm max-w-none">
@@ -445,7 +439,6 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
                                 </>
                               )}
                             </div>
-                          )
                         )}
                       </div>
                     </div>
