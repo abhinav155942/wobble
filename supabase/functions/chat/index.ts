@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, agentId, conversationId, streamResponse = true } = await req.json();
+    const { messages, agentId, conversationId, streamResponse = true, selectedModel = "wopple-free" } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -83,6 +83,38 @@ serve(async (req) => {
     
     const connections = agent?.settings?.connections || {};
     const userId = agent?.user_id;
+    const aiSettings = agent?.settings?.ai || {};
+    
+    // Determine AI provider and model based on selectedModel
+    let aiProvider = "lovable"; // default
+    let aiModel = "google/gemini-2.5-flash";
+    let aiApiKey = LOVABLE_API_KEY;
+    let aiBaseUrl = "https://ai.gateway.lovable.dev/v1/chat/completions";
+    
+    if (selectedModel !== "wopple-free") {
+      // Parse custom model selection (format: "provider-model")
+      const [provider, ...modelParts] = selectedModel.split('-');
+      const model = modelParts.join('-');
+      
+      if (provider === "openai" && aiSettings.customProvider === "openai") {
+        aiProvider = "openai";
+        aiModel = model;
+        aiApiKey = aiSettings.customApiKey || LOVABLE_API_KEY;
+        aiBaseUrl = "https://api.openai.com/v1/chat/completions";
+      } else if (provider === "anthropic" && aiSettings.customProvider === "anthropic") {
+        aiProvider = "anthropic";
+        aiModel = model;
+        aiApiKey = aiSettings.customApiKey || LOVABLE_API_KEY;
+        aiBaseUrl = "https://api.anthropic.com/v1/messages";
+      } else if (provider === "google" && aiSettings.customProvider === "google") {
+        aiProvider = "google";
+        aiModel = model;
+        aiApiKey = aiSettings.customApiKey || LOVABLE_API_KEY;
+        aiBaseUrl = "https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent";
+      }
+    }
+    
+    console.log(`Using AI Provider: ${aiProvider}, Model: ${aiModel}`);
 
     // Get user message for memory search
     const lastUserMessage = messages[messages.length - 1];
@@ -409,7 +441,7 @@ serve(async (req) => {
     // Handle non-streaming mode for webhooks
     if (!streamResponse) {
       const requestBody: any = {
-        model: "google/gemini-2.5-flash",
+        model: aiModel,
         messages: [
           { role: "system", content: systemPrompt },
           ...messages,
@@ -420,10 +452,10 @@ serve(async (req) => {
         requestBody.tools = tools;
       }
 
-      const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const response = await fetch(aiBaseUrl, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${aiApiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestBody),
@@ -487,7 +519,7 @@ serve(async (req) => {
             controller.enqueue(encoder.encode(`data: ${thinkingEvent}\n\n`));
             
             const iterationBody: any = {
-              model: "google/gemini-2.5-flash",
+              model: aiModel,
               messages: [
                 { role: "system", content: systemPrompt },
                 ...conversationHistory,
@@ -499,10 +531,10 @@ serve(async (req) => {
               iterationBody.tools = tools;
             }
             
-            const iterationResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            const iterationResponse = await fetch(aiBaseUrl, {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${LOVABLE_API_KEY}`,
+                Authorization: `Bearer ${aiApiKey}`,
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(iterationBody),

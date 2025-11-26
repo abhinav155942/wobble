@@ -4,12 +4,14 @@ import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import Footer from "@/components/Footer";
+import { AgentShowcase } from "@/components/AgentShowcase";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
+      <AgentShowcase />
       <Features />
       <HowItWorks />
       <Pricing />

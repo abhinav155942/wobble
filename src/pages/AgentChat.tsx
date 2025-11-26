@@ -6,7 +6,8 @@ import { ArrowLeft, Settings, Menu } from "lucide-react";
 import { ChatInterface } from "@/components/agent/ChatInterface";
 import { AgentSettings } from "@/components/agent/AgentSettings";
 import { ConversationSidebar } from "@/components/agent/ConversationSidebar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { ModelSelector } from "@/components/agent/ModelSelector";
 
 interface Agent {
   id: string;
@@ -24,6 +25,7 @@ const AgentChat = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>("wopple-free");
 
   useEffect(() => {
     fetchAgent();
@@ -45,7 +47,52 @@ const AgentChat = () => {
     }
 
     setAgent(data);
+    
+    // Set selected model based on agent settings
+    const settings = data.settings as any;
+    const aiProvider = settings?.ai?.provider || "wopple";
+    if (aiProvider === "custom") {
+      const customModel = settings?.ai?.customModel || "gpt-5-2025-08-07";
+      const customProvider = settings?.ai?.customProvider || "openai";
+      setSelectedModel(`${customProvider}-${customModel}`);
+    } else {
+      setSelectedModel("wopple-free");
+    }
+    
     setLoading(false);
+  };
+  
+  const getAvailableModels = () => {
+    const models = [
+      { id: "wopple-free", name: "Wopple AI", provider: "Free (Limited)", isFree: true }
+    ];
+    
+    if (agent) {
+      const settings = agent.settings as any;
+      if (settings?.ai?.provider === "custom") {
+        const customProvider = settings.ai.customProvider || "openai";
+        
+        if (customProvider === "openai") {
+          models.push(
+            { id: "openai-gpt-5-2025-08-07", name: "GPT-5", provider: "OpenAI", isFree: false },
+            { id: "openai-gpt-5-mini-2025-08-07", name: "GPT-5 Mini", provider: "OpenAI", isFree: false },
+            { id: "openai-gpt-4o", name: "GPT-4o", provider: "OpenAI", isFree: false }
+          );
+        } else if (customProvider === "anthropic") {
+          models.push(
+            { id: "anthropic-claude-sonnet-4-5", name: "Claude Sonnet 4.5", provider: "Anthropic", isFree: false },
+            { id: "anthropic-claude-opus-4-1-20250805", name: "Claude Opus 4.1", provider: "Anthropic", isFree: false }
+          );
+        } else if (customProvider === "google") {
+          models.push(
+            { id: "google-gemini-2.5-pro", name: "Gemini 2.5 Pro", provider: "Google", isFree: false },
+            { id: "google-gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "Google", isFree: false }
+          );
+        }
+      }
+    }
+    
+    return models;
   };
 
   if (loading) {
@@ -114,13 +161,20 @@ const AgentChat = () => {
                   )}
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setShowSettings(!showSettings)}
-              >
-                <Settings className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <ModelSelector
+                  selectedModel={selectedModel}
+                  onModelChange={setSelectedModel}
+                  availableModels={getAvailableModels()}
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setShowSettings(!showSettings)}
+                >
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
           </div>
         </header>
@@ -137,6 +191,7 @@ const AgentChat = () => {
               agent={agent}
               conversationId={currentConversationId}
               onConversationChange={setCurrentConversationId}
+              selectedModel={selectedModel}
             />
           )}
         </div>

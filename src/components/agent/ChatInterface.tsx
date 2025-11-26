@@ -37,9 +37,10 @@ interface ChatInterfaceProps {
   agent: Agent;
   conversationId: string | null;
   onConversationChange: (conversationId: string) => void;
+  selectedModel?: string;
 }
 
-export function ChatInterface({ agent, conversationId, onConversationChange }: ChatInterfaceProps) {
+export function ChatInterface({ agent, conversationId, onConversationChange, selectedModel = "wopple-free" }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -159,6 +160,7 @@ export function ChatInterface({ agent, conversationId, onConversationChange }: C
           })),
           agentId: agent.id,
           conversationId,
+          selectedModel,
         }),
         signal: abortControllerRef.current.signal,
       });
