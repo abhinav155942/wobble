@@ -15,8 +15,9 @@ interface Agent {
 
 export function AISettings({ agent, onUpdate }: { agent: Agent; onUpdate: () => void }) {
   const [aiProvider, setAiProvider] = useState(agent.settings?.ai?.provider || "wopple");
-  const [customModel, setCustomModel] = useState(agent.settings?.ai?.customModel || "");
+  const [customModel, setCustomModel] = useState(agent.settings?.ai?.customModel || "gpt-5-2025-08-07");
   const [customApiKey, setCustomApiKey] = useState(agent.settings?.ai?.customApiKey || "");
+  const [customProvider, setCustomProvider] = useState(agent.settings?.ai?.customProvider || "openai");
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
@@ -29,6 +30,7 @@ export function AISettings({ agent, onUpdate }: { agent: Agent; onUpdate: () => 
           ...agent.settings,
           ai: {
             provider: aiProvider,
+            customProvider: aiProvider === "custom" ? customProvider : null,
             customModel: aiProvider === "custom" ? customModel : null,
             customApiKey: aiProvider === "custom" ? customApiKey : null,
           },
@@ -85,17 +87,47 @@ export function AISettings({ agent, onUpdate }: { agent: Agent; onUpdate: () => 
       {aiProvider === "custom" && (
         <div className="space-y-4 border-l-2 border-primary/20 pl-4">
           <div className="space-y-2">
+            <Label htmlFor="provider">AI Provider</Label>
+            <Select value={customProvider} onValueChange={setCustomProvider}>
+              <SelectTrigger id="provider">
+                <SelectValue placeholder="Select AI provider" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="openai">OpenAI</SelectItem>
+                <SelectItem value="anthropic">Anthropic</SelectItem>
+                <SelectItem value="google">Google AI</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="model">AI Model</Label>
             <Select value={customModel} onValueChange={setCustomModel}>
               <SelectTrigger id="model">
                 <SelectValue placeholder="Select AI model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="openai-gpt-4">OpenAI GPT-4</SelectItem>
-                <SelectItem value="openai-gpt-3.5">OpenAI GPT-3.5 Turbo</SelectItem>
-                <SelectItem value="anthropic-claude-3">Anthropic Claude 3</SelectItem>
-                <SelectItem value="anthropic-claude-2">Anthropic Claude 2</SelectItem>
-                <SelectItem value="gemini-pro">Google Gemini Pro</SelectItem>
+                {customProvider === "openai" && (
+                  <>
+                    <SelectItem value="gpt-5-2025-08-07">GPT-5 (Recommended)</SelectItem>
+                    <SelectItem value="gpt-5-mini-2025-08-07">GPT-5 Mini</SelectItem>
+                    <SelectItem value="gpt-5-nano-2025-08-07">GPT-5 Nano</SelectItem>
+                    <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                    <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                  </>
+                )}
+                {customProvider === "anthropic" && (
+                  <>
+                    <SelectItem value="claude-sonnet-4-5">Claude Sonnet 4.5</SelectItem>
+                    <SelectItem value="claude-opus-4-1-20250805">Claude Opus 4.1</SelectItem>
+                    <SelectItem value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</SelectItem>
+                  </>
+                )}
+                {customProvider === "google" && (
+                  <>
+                    <SelectItem value="gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                    <SelectItem value="gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+                  </>
+                )}
               </SelectContent>
             </Select>
           </div>
