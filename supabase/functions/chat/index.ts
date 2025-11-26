@@ -420,6 +420,7 @@ serve(async (req) => {
 
     // Store user message only if it's not already in the database
     const userMessage = messages[messages.length - 1];
+    let savedUserMessageId = null;
     if (userMessage && userMessage.role === 'user') {
       const { data: existingMessages } = await supabase
         .from('messages')
@@ -430,11 +431,15 @@ serve(async (req) => {
         .limit(1);
       
       if (!existingMessages || existingMessages.length === 0) {
-        await supabase.from('messages').insert({
+        const { data: savedMessage } = await supabase.from('messages').insert({
           conversation_id: conversationId,
           role: 'user',
           content: userMessage.content,
-        });
+        }).select('id').single();
+        
+        savedUserMessageId = savedMessage?.id;
+      } else {
+        savedUserMessageId = existingMessages[0].id;
       }
     }
 
@@ -469,15 +474,21 @@ serve(async (req) => {
       const aiResponse = responseData.choices?.[0]?.message?.content || "I'm here to help!";
       
       const responseTime = Date.now() - startTime;
-      await supabase.from('messages').insert({
+      const { data: savedMessage } = await supabase.from('messages').insert({
         conversation_id: conversationId,
         role: 'assistant',
         content: aiResponse,
         response_time_ms: responseTime,
-      });
+      }).select('id').single();
 
       return new Response(
-        JSON.stringify({ response: aiResponse }),
+        JSON.stringify({ 
+          response: aiResponse,
+          messageIds: {
+            userMessageId: savedUserMessageId,
+            assistantMessageId: savedMessage?.id
+          }
+        }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -514,7 +525,10 @@ serve(async (req) => {
             const thinkingEvent = JSON.stringify({
               type: 'thinking',
               content: iteration === 1 ? 'Let me think about this...' : 'Analyzing next step...',
-              iteration
+              iteration,
+              messageIds: {
+                userMessageId: savedUserMessageId
+              }
             });
             controller.enqueue(encoder.encode(`data: ${thinkingEvent}\n\n`));
             
@@ -855,14 +869,17 @@ serve(async (req) => {
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
 
           const responseTime = Date.now() - startTime;
+          let assistantMessageId = null;
           if (finalResponse) {
             console.log(`Storing final response (${finalResponse.length} chars) after ${iteration} iterations`);
-            await supabase.from('messages').insert({
+            const { data: savedMessage } = await supabase.from('messages').insert({
               conversation_id: conversationId,
               role: 'assistant',
               content: finalResponse,
               response_time_ms: responseTime,
-            });
+            }).select('id').single();
+            
+            assistantMessageId = savedMessage?.id;
 
             // Store conversation as memory in background (don't await)
             if (userId && lastUserMessage) {
@@ -878,26 +895,44 @@ serve(async (req) => {
               }).catch(err => console.error('Background memory storage error:', err));
             }
           }
+          
+          // Send message IDs to frontend
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+            type: 'message_ids',
+            messageIds: {
+              userMessageId: savedUserMessageId,
+              assistantMessageId
+            }
+          })}\n\n`));
 
           controller.close();
         } catch (error) {
           console.error('Multi-step reasoning error:', error);
-          const errorMessage = "I encountered an error during my reasoning process. Please try again.";
+          const errorMsg = "I encountered an error during my reasoning process. Please try again.";
           
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             choices: [{
-              delta: { content: errorMessage }
+              delta: { content: errorMsg }
             }]
           })}\n\n`));
           
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           
-          await supabase.from('messages').insert({
+          const { data: savedErrorMessage } = await supabase.from('messages').insert({
             conversation_id: conversationId,
             role: 'assistant',
-            content: errorMessage,
+            content: errorMsg,
             response_time_ms: Date.now() - startTime,
-          });
+          }).select('id').single();
+          
+          // Send message IDs even in error case
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+            type: 'message_ids',
+            messageIds: {
+              userMessageId: savedUserMessageId,
+              assistantMessageId: savedErrorMessage?.id
+            }
+          })}\n\n`));
           
           controller.close();
         }
