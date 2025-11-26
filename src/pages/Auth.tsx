@@ -104,7 +104,7 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">AI Support Desk</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Wobble</CardTitle>
           <CardDescription className="text-center">
             Sign in to manage your agents
           </CardDescription>

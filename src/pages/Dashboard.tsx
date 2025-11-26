@@ -96,7 +96,7 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Bot className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold">AI Support Desk</h1>
+            <h1 className="text-2xl font-bold">Wobble</h1>
           </div>
           <div className="flex items-center gap-4">
             <p className="text-sm text-muted-foreground hidden sm:block">

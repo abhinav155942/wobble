@@ -21,7 +21,7 @@ export const InteractiveChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi! I'm notants Agent. Ask me anything about AI Support Desk!",
+      content: "Hi! I'm notants Agent. Ask me anything about Wobble!",
       timestamp: new Date(),
       id: crypto.randomUUID(),
     },
@@ -115,7 +115,7 @@ export const InteractiveChat = () => {
             </p>
           </div>
           <Badge variant="secondary" className="text-[9px] md:text-xs px-2 py-0.5 md:px-3 md:py-1 hidden sm:flex">
-            built in 5 mins on AI Support Desk.
+            built in 5 mins on Wobble.
           </Badge>
         </div>
       </div>
