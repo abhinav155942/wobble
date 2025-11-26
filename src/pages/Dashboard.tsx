@@ -4,10 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Bot, LogOut } from "lucide-react";
+import { Plus, LogOut } from "lucide-react";
 import { User, Session } from "@supabase/supabase-js";
 import { CreateAgentDialog } from "@/components/dashboard/CreateAgentDialog";
 import { AgentCard } from "@/components/dashboard/AgentCard";
+import wobbleLogo from "@/assets/wobble-logo.png";
 
 interface Agent {
   id: string;
@@ -95,7 +96,9 @@ export default function Dashboard() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Bot className="h-6 w-6 text-primary" />
+            <div className="w-8 h-8 flex items-center justify-center">
+              <img src={wobbleLogo} alt="Wobble Logo" className="w-full h-full object-contain" />
+            </div>
             <h1 className="text-2xl font-bold">Wobble</h1>
           </div>
           <div className="flex items-center gap-4">

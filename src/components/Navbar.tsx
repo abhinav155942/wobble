@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import wobbleLogo from "@/assets/wobble-logo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,8 +11,8 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center space-x-3 group cursor-pointer">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <span className="text-primary-foreground font-bold text-xl">W</span>
+            <div className="w-11 h-11 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <img src={wobbleLogo} alt="Wobble Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-bold text-xl text-foreground">Wobble</span>
           </div>
