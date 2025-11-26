@@ -72,18 +72,6 @@ const AgentChat = () => {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      {/* Desktop Sidebar */}
-      <div className="hidden md:block w-64 border-r">
-        {agent && (
-          <ConversationSidebar
-            agentId={agent.id}
-            currentConversationId={currentConversationId}
-            onConversationSelect={handleConversationSelect}
-            onNewChat={handleNewChat}
-          />
-        )}
-      </div>
-
       {/* Mobile Sidebar */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent side="left" className="w-64 p-0">
@@ -99,22 +87,17 @@ const AgentChat = () => {
       </Sheet>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="border-b">
-          <div className="px-4 py-4">
+        <header className="border-b bg-background/95 backdrop-blur-sm">
+          <div className="px-4 py-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="md:hidden"
-                      onClick={() => setSidebarOpen(true)}
-                    >
-                      <Menu className="h-5 w-5" />
-                    </Button>
-                  </SheetTrigger>
-                </Sheet>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -123,9 +106,9 @@ const AgentChat = () => {
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
                 <div>
-                  <h1 className="text-2xl font-bold">{agent.name}</h1>
+                  <h1 className="text-xl font-bold">{agent.name}</h1>
                   {agent.description && (
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {agent.description}
                     </p>
                   )}
