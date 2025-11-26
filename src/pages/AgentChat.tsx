@@ -172,21 +172,21 @@ const AgentChat = () => {
                 <Button
                   variant={activeTab === 'knowledge' ? 'default' : 'outline'}
                   size="icon"
-                  onClick={() => setActiveTab('knowledge')}
+                  onClick={() => setActiveTab(activeTab === 'knowledge' ? 'chat' : 'knowledge')}
                 >
                   <BookOpen className="h-5 w-5" />
                 </Button>
                 <Button
                   variant={activeTab === 'analytics' ? 'default' : 'outline'}
                   size="icon"
-                  onClick={() => setActiveTab('analytics')}
+                  onClick={() => setActiveTab(activeTab === 'analytics' ? 'chat' : 'analytics')}
                 >
                   <BarChart3 className="h-5 w-5" />
                 </Button>
                 <Button
                   variant={activeTab === 'settings' ? 'default' : 'outline'}
                   size="icon"
-                  onClick={() => setActiveTab('settings')}
+                  onClick={() => setActiveTab(activeTab === 'settings' ? 'chat' : 'settings')}
                 >
                   <Settings className="h-5 w-5" />
                 </Button>
