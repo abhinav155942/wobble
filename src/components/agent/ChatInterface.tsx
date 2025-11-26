@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, StopCircle, Loader2 } from "lucide-react";
+import { Sparkles, StopCircle, Loader2, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -345,56 +346,49 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-0">
               {messages.map((message, index) => {
                 const isLastMessage = index === messages.length - 1;
                 const isStreamingThis = isLastMessage && isStreaming && message.role === "assistant";
 
                 return (
-                  <div
-                    key={message.id}
-                    className={`flex gap-3 ${
-                      message.role === "user" ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`group max-w-[80%] space-y-2 ${
-                        message.role === "user" ? "items-end" : "items-start"
-                      }`}
-                    >
-                      <div
-                        className={`rounded-2xl px-4 py-3 ${
-                          message.role === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted/50 border border-border/50"
-                        }`}
-                      >
-                        {message.role === "user" ? (
-                          <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
-                            {message.content}
-                          </p>
-                        ) : !message.content ? (
-                          <div className="flex items-center gap-2 text-muted-foreground py-1">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span className="text-[15px] italic">Thinking...</span>
-                          </div>
-                        ) : (
-                            <div>
+                  <div key={message.id}>
+                    <div className="py-8 px-4">
+                      <div className="max-w-4xl mx-auto flex gap-6">
+                        {/* Avatar */}
+                        <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-muted">
+                          {message.role === 'user' ? (
+                            <User className="w-5 h-5 text-muted-foreground" />
+                          ) : (
+                            <Sparkles className="w-5 h-5 text-primary" />
+                          )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 space-y-3 min-w-0">
+                          {message.role === "user" ? (
+                            <p className="text-base leading-relaxed text-foreground whitespace-pre-wrap">
+                              {message.content}
+                            </p>
+                          ) : !message.content ? (
+                            <div className="flex items-center gap-2 text-muted-foreground py-1">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span className="text-base italic">Thinking...</span>
+                            </div>
+                          ) : (
+                            <div className="space-y-3">
                               {isStreamingThis ? (
-                                <div className="prose prose-sm max-w-none">
-                                  <TypingText
-                                    text={message.content}
-                                    speed={10}
-                                  />
+                                <div className="prose prose-sm max-w-none text-base">
+                                  <TypingText text={message.content} speed={10} />
                                 </div>
                               ) : (
                                 <>
-                                  <div className="prose prose-sm max-w-none">
+                                  <div className="prose prose-sm max-w-none text-base">
                                     <ReactMarkdown
                                       remarkPlugins={[remarkGfm]}
                                       components={{
                                         p: ({ children }) => (
-                                          <p className="mb-3 last:mb-0 leading-relaxed text-[15px]">
+                                          <p className="mb-3 last:mb-0 leading-relaxed text-base text-foreground">
                                             {children}
                                           </p>
                                         ),
@@ -402,7 +396,7 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
                                           const match = /language-(\w+)/.exec(className || "");
                                           const isInline = !match;
                                           return isInline ? (
-                                            <code className="px-1.5 py-0.5 rounded bg-muted text-sm font-mono">
+                                            <code className="px-1.5 py-0.5 rounded bg-muted text-sm font-mono text-foreground">
                                               {children}
                                             </code>
                                           ) : null;
@@ -420,12 +414,12 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
                                           return <CodeBlock code={code} language={language} />;
                                         },
                                         ul: ({ children }) => (
-                                          <ul className="list-disc list-inside space-y-1.5 my-3">
+                                          <ul className="list-disc list-inside space-y-1.5 my-3 text-foreground">
                                             {children}
                                           </ul>
                                         ),
                                         ol: ({ children }) => (
-                                          <ol className="list-decimal list-inside space-y-1.5 my-3">
+                                          <ol className="list-decimal list-inside space-y-1.5 my-3 text-foreground">
                                             {children}
                                           </ol>
                                         ),
@@ -446,16 +440,22 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
                                   </div>
                                   
                                   {!isStreamingThis && (
-                                    <div className="mt-2 pt-2 border-t border-border/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="pt-2">
                                       <MessageActions content={message.content} messageId={message.id} />
                                     </div>
                                   )}
                                 </>
                               )}
                             </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </div>
+                    
+                    {/* Separator between messages */}
+                    {index < messages.length - 1 && (
+                      <Separator className="bg-border/30" />
+                    )}
                   </div>
                 );
               })}

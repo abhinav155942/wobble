@@ -20,12 +20,15 @@ const Hero = () => {
               and performs support actions automatically — all while you focus on growth.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 justify-center">
-              <Button size="lg" className="group text-base font-bold h-12 sm:h-14 px-6 sm:px-8 shadow-xl hover:shadow-2xl bg-gradient-to-r from-primary to-primary/90 transition-all duration-300 hover:scale-[1.05] active:scale-95 touch-manipulation">
-                Start Free Trial
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 justify-center">
+              <Button size="lg" className="group text-base font-bold h-14 px-10 shadow-2xl hover:shadow-primary/25 bg-gradient-to-r from-primary via-primary to-primary/90 transition-all duration-300 hover:scale-[1.05] active:scale-95 touch-manipulation relative overflow-hidden">
+                <span className="relative z-10 flex items-center">
+                  Start Free Trial
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-white/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
               </Button>
-              <Button size="lg" variant="outline" className="text-base font-semibold h-12 sm:h-14 px-6 sm:px-8 border-2 hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 hover:scale-[1.02] active:scale-95 touch-manipulation">
+              <Button size="lg" variant="outline" className="text-base font-semibold h-14 px-10 border-2 hover:bg-primary/10 hover:border-primary transition-all duration-300 hover:scale-[1.02] active:scale-95 touch-manipulation">
                 Watch Demo
               </Button>
             </div>

@@ -20,12 +20,12 @@ export function AgentShowcase() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <div className="group p-6 bg-card border-2 border-border/30 rounded-2xl hover:border-primary/50 transition-all hover:-translate-y-2 shadow-lg">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <Sparkles className="w-6 h-6 text-primary" />
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="group p-8 bg-gradient-to-br from-card to-card/50 border-2 border-border/30 rounded-3xl hover:border-primary/50 transition-all hover:-translate-y-2 shadow-xl hover:shadow-2xl">
+            <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Sparkles className="w-7 h-7 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Smart Learning</h3>
+            <h3 className="text-2xl font-bold mb-3">Smart Learning</h3>
             <p className="text-muted-foreground mb-4">
               Agents learn from your knowledge base, previous conversations, and customer interactions
             </p>
@@ -39,11 +39,11 @@ export function AgentShowcase() {
             </ul>
           </div>
 
-          <div className="group p-6 bg-card border-2 border-border/30 rounded-2xl hover:border-primary/50 transition-all hover:-translate-y-2 shadow-lg">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <MessageSquare className="w-6 h-6 text-primary" />
+          <div className="group p-8 bg-gradient-to-br from-card to-card/50 border-2 border-border/30 rounded-3xl hover:border-primary/50 transition-all hover:-translate-y-2 shadow-xl hover:shadow-2xl">
+            <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <MessageSquare className="w-7 h-7 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Multi-Channel</h3>
+            <h3 className="text-2xl font-bold mb-3">Multi-Channel</h3>
             <p className="text-muted-foreground mb-4">
               Deploy everywhere your customers are - web, WhatsApp, Instagram, email, and more
             </p>
@@ -57,11 +57,11 @@ export function AgentShowcase() {
             </ul>
           </div>
 
-          <div className="group p-6 bg-card border-2 border-border/30 rounded-2xl hover:border-primary/50 transition-all hover:-translate-y-2 shadow-lg">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <Zap className="w-6 h-6 text-primary" />
+          <div className="group p-8 bg-gradient-to-br from-card to-card/50 border-2 border-border/30 rounded-3xl hover:border-primary/50 transition-all hover:-translate-y-2 shadow-xl hover:shadow-2xl">
+            <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Zap className="w-7 h-7 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">Action Capable</h3>
+            <h3 className="text-2xl font-bold mb-3">Action Capable</h3>
             <p className="text-muted-foreground mb-4">
               Not just chat - agents can take actions like processing refunds, updating orders, and more
             </p>
