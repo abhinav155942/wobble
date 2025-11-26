@@ -27,6 +27,7 @@ export function ConversationSidebar({
   onNewChat,
 }: ConversationSidebarProps) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [showAll, setShowAll] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export function ConversationSidebar({
 
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-1">
-          {conversations.map((conversation) => (
+          {(showAll ? conversations : conversations.slice(0, 3)).map((conversation) => (
             <div
               key={conversation.id}
               onClick={() => onConversationSelect(conversation.id)}
@@ -129,6 +130,16 @@ export function ConversationSidebar({
               </Button>
             </div>
           ))}
+          
+          {!showAll && conversations.length > 3 && (
+            <Button
+              variant="ghost"
+              className="w-full mt-2"
+              onClick={() => setShowAll(true)}
+            >
+              Show {conversations.length - 3} more
+            </Button>
+          )}
         </div>
       </ScrollArea>
     </div>

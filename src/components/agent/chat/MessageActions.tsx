@@ -86,73 +86,83 @@ export function MessageActions({ content, messageId, onRegenerate }: MessageActi
   return (
     <TooltipProvider>
       <div className="flex items-center gap-1">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 text-xs"
+              onClick={handleCopy}
+            >
+              {copied ? (
+                <>
+                  <Check className="h-3.5 w-3.5 mr-1.5" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3.5 w-3.5 mr-1.5" />
+                  Copy
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{copied ? "Copied!" : "Copy"}</p>
+          </TooltipContent>
+        </Tooltip>
+
         {messageId && (
           <>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  size="icon"
                   variant="ghost"
+                  size="sm"
+                  className="h-8 px-2"
                   onClick={() => handleFeedback('like')}
-                  className={`h-7 w-7 hover:bg-muted ${
-                    feedback === 'like' ? 'text-green-500' : ''
-                  }`}
                 >
-                  <ThumbsUp className="h-3.5 w-3.5" />
+                  <ThumbsUp className={`h-3.5 w-3.5 ${feedback === 'like' ? "fill-primary text-primary" : ""}`} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Like</TooltipContent>
+              <TooltipContent>
+                <p>Like</p>
+              </TooltipContent>
             </Tooltip>
 
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  size="icon"
                   variant="ghost"
+                  size="sm"
+                  className="h-8 px-2"
                   onClick={() => handleFeedback('dislike')}
-                  className={`h-7 w-7 hover:bg-muted ${
-                    feedback === 'dislike' ? 'text-red-500' : ''
-                  }`}
                 >
-                  <ThumbsDown className="h-3.5 w-3.5" />
+                  <ThumbsDown className={`h-3.5 w-3.5 ${feedback === 'dislike' ? "fill-destructive text-destructive" : ""}`} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Dislike</TooltipContent>
+              <TooltipContent>
+                <p>Dislike</p>
+              </TooltipContent>
             </Tooltip>
           </>
         )}
-        
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={handleCopy}
-              className="h-7 w-7 hover:bg-muted"
-            >
-              {copied ? (
-                <Check className="h-3.5 w-3.5 text-green-500" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Copy message</TooltipContent>
-        </Tooltip>
 
         {onRegenerate && (
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                size="icon"
                 variant="ghost"
+                size="sm"
+                className="h-8 px-2"
                 onClick={onRegenerate}
-                className="h-7 w-7 hover:bg-muted"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Regenerate response</TooltipContent>
+            <TooltipContent>
+              <p>Regenerate</p>
+            </TooltipContent>
           </Tooltip>
         )}
       </div>

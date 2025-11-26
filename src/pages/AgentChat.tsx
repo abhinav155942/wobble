@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Settings, Menu } from "lucide-react";
+import { ArrowLeft, Settings, Menu, BarChart3, BookOpen } from "lucide-react";
 import { ChatInterface } from "@/components/agent/ChatInterface";
 import { AgentSettings } from "@/components/agent/AgentSettings";
 import { ConversationSidebar } from "@/components/agent/ConversationSidebar";
+import { AgentAnalytics } from "@/components/agent/AgentAnalytics";
+import { KnowledgeBase } from "@/components/agent/KnowledgeBase";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { ModelSelector } from "@/components/agent/ModelSelector";
 
@@ -22,7 +24,7 @@ const AgentChat = () => {
   const navigate = useNavigate();
   const [agent, setAgent] = useState<Agent | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
+  const [activeTab, setActiveTab] = useState<'chat' | 'settings' | 'analytics' | 'knowledge'>('chat');
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>("wopple-free");
@@ -168,9 +170,23 @@ const AgentChat = () => {
                   availableModels={getAvailableModels()}
                 />
                 <Button
-                  variant="outline"
+                  variant={activeTab === 'knowledge' ? 'default' : 'outline'}
                   size="icon"
-                  onClick={() => setShowSettings(!showSettings)}
+                  onClick={() => setActiveTab('knowledge')}
+                >
+                  <BookOpen className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant={activeTab === 'analytics' ? 'default' : 'outline'}
+                  size="icon"
+                  onClick={() => setActiveTab('analytics')}
+                >
+                  <BarChart3 className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant={activeTab === 'settings' ? 'default' : 'outline'}
+                  size="icon"
+                  onClick={() => setActiveTab('settings')}
                 >
                   <Settings className="h-5 w-5" />
                 </Button>
@@ -180,12 +196,20 @@ const AgentChat = () => {
         </header>
 
         <div className="flex-1 overflow-hidden">
-          {showSettings ? (
+          {activeTab === 'settings' ? (
             <AgentSettings
               agent={agent}
-              onClose={() => setShowSettings(false)}
+              onClose={() => setActiveTab('chat')}
               onUpdate={fetchAgent}
             />
+          ) : activeTab === 'analytics' ? (
+            <div className="h-full overflow-y-auto">
+              <AgentAnalytics agent={agent} />
+            </div>
+          ) : activeTab === 'knowledge' ? (
+            <div className="h-full overflow-y-auto">
+              <KnowledgeBase agent={agent} />
+            </div>
           ) : (
             <ChatInterface
               agent={agent}
