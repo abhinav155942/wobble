@@ -1,3 +1,5 @@
+import { AlertCircle } from "lucide-react";
+
 const Footer = () => {
   return (
     <footer className="py-8 md:py-12 px-4 border-t border-border">
@@ -94,7 +96,13 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="pt-6 md:pt-8 border-t border-border">
+        <div className="pt-6 md:pt-8 border-t border-border space-y-3">
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground bg-primary/5 border border-primary/20 rounded-lg py-2 px-4 max-w-md mx-auto">
+            <AlertCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+            <span className="font-medium">
+              App under construction. Official launch in 2 days.
+            </span>
+          </div>
           <p className="text-xs md:text-sm text-muted-foreground text-center">
             © 2025 AI Support Desk. All rights reserved.
           </p>

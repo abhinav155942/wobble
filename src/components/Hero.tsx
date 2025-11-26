@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Star, Quote } from "lucide-react";
+import { ArrowRight, Star, Quote, AlertCircle } from "lucide-react";
 import { InteractiveChat } from "./InteractiveChat";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Hero = () => {
   return (
@@ -9,6 +10,13 @@ const Hero = () => {
       <div className="container mx-auto relative px-0">
         <div className="space-y-16">
           <div className="max-w-4xl mx-auto text-center space-y-6 md:space-y-8 animate-fade-in px-2 sm:px-4">
+            <Alert className="max-w-2xl mx-auto bg-primary/10 border-primary/30 animate-pulse">
+              <AlertCircle className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-sm font-medium">
+                🚧 App is still under construction. Will be officially launched within 2 days.
+              </AlertDescription>
+            </Alert>
+
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-foreground leading-[1.1] tracking-tight">
               Automate{" "}
               <span className="text-primary">80%</span>
