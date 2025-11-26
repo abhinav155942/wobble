@@ -17,7 +17,7 @@ interface Agent {
 
 interface KnowledgeItem {
   id: string;
-  type: 'document' | 'url' | 'faq';
+  type: 'document' | 'url' | 'faq' | 'context';
   title: string;
   content: string;
   url?: string;
@@ -28,8 +28,9 @@ export function KnowledgeBase({ agent }: { agent: Agent }) {
   const [items, setItems] = useState<KnowledgeItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [newItem, setNewItem] = useState({
-    type: 'faq' as 'document' | 'url' | 'faq',
+    type: 'faq' as 'document' | 'url' | 'faq' | 'context',
     title: '',
     content: '',
     url: '',
@@ -125,11 +126,54 @@ export function KnowledgeBase({ agent }: { agent: Agent }) {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setNewItem({ ...newItem, content, title: newItem.title || file.name });
+    };
+    reader.readAsText(file);
+  };
+
+  const handleFetchUrl = async () => {
+    if (!newItem.url) {
+      toast({
+        title: "Missing URL",
+        description: "Please enter a URL to fetch",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setFetching(true);
+    try {
+      const response = await fetch(newItem.url);
+      const html = await response.text();
+      setNewItem({ ...newItem, content: html });
+      toast({
+        title: "Success",
+        description: "URL content fetched successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch URL content",
+        variant: "destructive",
+      });
+    } finally {
+      setFetching(false);
+    }
+  };
+
   const getIcon = (type: string) => {
     switch (type) {
       case 'document': return <FileText className="h-4 w-4" />;
       case 'url': return <LinkIcon className="h-4 w-4" />;
       case 'faq': return <MessageSquare className="h-4 w-4" />;
+      case 'context': return <FileText className="h-4 w-4" />;
       default: return null;
     }
   };
@@ -201,7 +245,7 @@ export function KnowledgeBase({ agent }: { agent: Agent }) {
               <Label htmlFor="type">Type</Label>
               <Select
                 value={newItem.type}
-                onValueChange={(value: 'document' | 'url' | 'faq') =>
+                onValueChange={(value: 'document' | 'url' | 'faq' | 'context') =>
                   setNewItem({ ...newItem, type: value })
                 }
               >
@@ -212,6 +256,7 @@ export function KnowledgeBase({ agent }: { agent: Agent }) {
                   <SelectItem value="faq">FAQ</SelectItem>
                   <SelectItem value="document">Document</SelectItem>
                   <SelectItem value="url">URL</SelectItem>
+                  <SelectItem value="context">Context</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -229,33 +274,57 @@ export function KnowledgeBase({ agent }: { agent: Agent }) {
             {newItem.type === 'url' && (
               <div className="space-y-2">
                 <Label htmlFor="url">URL</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="url"
+                    type="url"
+                    value={newItem.url}
+                    onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
+                    placeholder="https://example.com"
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleFetchUrl}
+                    disabled={fetching}
+                    variant="outline"
+                  >
+                    {fetching ? "Fetching..." : "Fetch HTML"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {newItem.type === 'document' && (
+              <div className="space-y-2">
+                <Label htmlFor="file">Upload Document</Label>
                 <Input
-                  id="url"
-                  type="url"
-                  value={newItem.url}
-                  onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
-                  placeholder="https://example.com"
+                  id="file"
+                  type="file"
+                  onChange={handleFileUpload}
+                  accept=".txt,.md,.json,.csv,.html,.xml"
                 />
               </div>
             )}
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="content">Content</Label>
-                <AIEnhanceButton
+            {newItem.type !== 'document' && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="content">Content</Label>
+                  <AIEnhanceButton
+                    value={newItem.content}
+                    onEnhanced={(enhanced) => setNewItem({ ...newItem, content: enhanced })}
+                    type={newItem.type === "faq" ? "faq" : "general"}
+                  />
+                </div>
+                <Textarea
+                  id="content"
                   value={newItem.content}
-                  onEnhanced={(enhanced) => setNewItem({ ...newItem, content: enhanced })}
-                  type={newItem.type === "faq" ? "faq" : "general"}
+                  onChange={(e) => setNewItem({ ...newItem, content: e.target.value })}
+                  placeholder="Enter content"
+                  rows={6}
                 />
               </div>
-              <Textarea
-                id="content"
-                value={newItem.content}
-                onChange={(e) => setNewItem({ ...newItem, content: e.target.value })}
-                placeholder="Enter content"
-                rows={6}
-              />
-            </div>
+            )}
 
             <Button onClick={handleAdd} disabled={adding} className="w-full">
               <Plus className="h-4 w-4 mr-2" />
