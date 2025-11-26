@@ -11,9 +11,9 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center space-x-3 group cursor-pointer">
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <span className="text-primary-foreground font-bold text-xl">A</span>
+              <span className="text-primary-foreground font-bold text-xl">W</span>
             </div>
-            <span className="font-bold text-xl text-foreground">AI Support Desk</span>
+            <span className="font-bold text-xl text-foreground">Wobble</span>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">

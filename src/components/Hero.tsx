@@ -83,7 +83,7 @@ const Hero = () => {
                   Try Our Interactive Agent
                 </h3>
                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                  This is a live AI agent built with <span className="font-semibold text-foreground">AI Support Desk</span>. 
+                  This is a live AI agent built with <span className="font-semibold text-foreground">Wobble</span>. 
                   Ask it anything about our platform, features, or pricing. Experience firsthand how our technology can transform your customer support.
                 </p>
                 <p className="text-xs sm:text-sm text-muted-foreground italic">

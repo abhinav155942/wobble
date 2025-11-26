@@ -8,9 +8,9 @@ const Footer = () => {
           <div className="space-y-3 md:space-y-4 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-2">
               <div className="w-7 h-7 md:w-8 md:h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-base md:text-lg">A</span>
+                <span className="text-primary-foreground font-bold text-base md:text-lg">W</span>
               </div>
-              <span className="font-bold text-base md:text-lg text-foreground">AI Support Desk</span>
+              <span className="font-bold text-base md:text-lg text-foreground">Wobble</span>
             </div>
             <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
               Autonomous customer support that learns your business and handles 80% of tickets automatically.
@@ -104,7 +104,7 @@ const Footer = () => {
             </span>
           </div>
           <p className="text-xs md:text-sm text-muted-foreground text-center">
-            © 2025 AI Support Desk. All rights reserved.
+            © 2025 Wobble. All rights reserved.
           </p>
         </div>
       </div>
