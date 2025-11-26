@@ -1,4 +1,5 @@
 import { AlertCircle } from "lucide-react";
+import wobbleLogo from "@/assets/wobble-logo.png";
 
 const Footer = () => {
   return (
@@ -7,8 +8,8 @@ const Footer = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-6 md:mb-8">
           <div className="space-y-3 md:space-y-4 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-2">
-              <div className="w-7 h-7 md:w-8 md:h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-base md:text-lg">W</span>
+              <div className="w-8 h-8 md:w-9 md:h-9 flex items-center justify-center">
+                <img src={wobbleLogo} alt="Wobble Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-base md:text-lg text-foreground">Wobble</span>
             </div>
