@@ -129,6 +129,7 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
     setIsStreaming(true);
 
     const assistantMessageId = crypto.randomUUID();
+    const userMessageDbId = crypto.randomUUID(); // Temporary ID until we get the real one
     const startTime = Date.now();
     
     const assistantMessage: Message = {
@@ -199,7 +200,20 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
               const parsed = JSON.parse(jsonStr);
               const elapsed = Date.now() - startTime;
               
-              if (parsed.type === 'thinking') {
+              if (parsed.type === 'message_ids') {
+                // Update message IDs with actual database IDs
+                setMessages((prev) =>
+                  prev.map((m) => {
+                    if (m.id === assistantMessageId && parsed.messageIds?.assistantMessageId) {
+                      return { ...m, id: parsed.messageIds.assistantMessageId };
+                    }
+                    if (m.id === userMessage.id && parsed.messageIds?.userMessageId) {
+                      return { ...m, id: parsed.messageIds.userMessageId };
+                    }
+                    return m;
+                  })
+                );
+              } else if (parsed.type === 'thinking') {
                 setMessages((prev) =>
                   prev.map((m) =>
                     m.id === assistantMessageId
@@ -433,7 +447,7 @@ export function ChatInterface({ agent, conversationId, onConversationChange, sel
                                   
                                   {!isStreamingThis && (
                                     <div className="mt-2 pt-2 border-t border-border/30 opacity-0 group-hover:opacity-100 transition-opacity">
-                                      <MessageActions content={message.content} />
+                                      <MessageActions content={message.content} messageId={message.id} />
                                     </div>
                                   )}
                                 </>
