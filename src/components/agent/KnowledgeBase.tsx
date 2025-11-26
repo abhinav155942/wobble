@@ -37,10 +37,14 @@ export function KnowledgeBase({ agent }: { agent: Agent }) {
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchKnowledgeBase();
-  }, [agent.id]);
+    if (agent?.id) {
+      fetchKnowledgeBase();
+    }
+  }, [agent?.id]);
 
   const fetchKnowledgeBase = async () => {
+    if (!agent?.id) return;
+    
     setLoading(true);
     const { data, error } = await supabase
       .from('knowledge_base')
@@ -61,6 +65,8 @@ export function KnowledgeBase({ agent }: { agent: Agent }) {
   };
 
   const handleAdd = async () => {
+    if (!agent?.id) return;
+    
     if (!newItem.title || !newItem.content) {
       toast({
         title: "Missing fields",
