@@ -17,7 +17,7 @@ interface ThinkingIndicatorProps {
   elapsedTime?: number;
 }
 
-export function ThinkingIndicator({ steps, isActive, elapsedTime = 0 }: ThinkingIndicatorProps) {
+export function ThinkingIndicator({ steps, isActive, elapsedTime = 0, compact = false }: ThinkingIndicatorProps & { compact?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
 
   if (steps.length === 0 && !isActive) return null;
@@ -29,13 +29,13 @@ export function ThinkingIndicator({ steps, isActive, elapsedTime = 0 }: Thinking
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "thinking":
-        return <Brain className="h-3.5 w-3.5 animate-pulse text-purple-500" />;
+        return <Brain className="h-3 w-3 animate-pulse text-purple-500" />;
       case "tool":
-        return <Loader2 className="h-3.5 w-3.5 animate-spin text-amber-500" />;
+        return <Loader2 className="h-3 w-3 animate-spin text-amber-500" />;
       case "complete":
-        return <span className="text-green-500">✓</span>;
+        return <span className="text-green-500 text-xs">✓</span>;
       case "error":
-        return <span className="text-red-500">✗</span>;
+        return <span className="text-red-500 text-xs">✗</span>;
       default:
         return null;
     }
@@ -56,21 +56,21 @@ export function ThinkingIndicator({ steps, isActive, elapsedTime = 0 }: Thinking
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div className="mb-3 rounded-xl border border-border/50 bg-muted/30 backdrop-blur-sm overflow-hidden">
+      <div className={`${compact ? 'mb-2' : 'mb-3'} rounded-lg border border-border/30 bg-muted/20 backdrop-blur-sm overflow-hidden`}>
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
-            className="w-full justify-between px-3 py-2.5 h-auto hover:bg-muted/50 transition-colors"
+            className="w-full justify-between px-2.5 py-1.5 h-auto hover:bg-muted/30 transition-colors"
           >
-            <div className="flex items-center gap-2 flex-1 text-left">
+            <div className="flex items-center gap-1.5 flex-1 text-left">
               {isActive ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                <Loader2 className="h-3 w-3 animate-spin text-primary" />
               ) : (
-                <Brain className="h-3.5 w-3.5 text-primary" />
+                <Brain className="h-3 w-3 text-primary" />
               )}
-              <span className="text-xs font-medium text-foreground">{getStatusText()}</span>
+              <span className="text-[11px] font-medium text-foreground">{getStatusText()}</span>
               {totalSteps > 0 && (
-                <span className="text-[10px] text-muted-foreground bg-background/50 px-1.5 py-0.5 rounded-md">
+                <span className="text-[10px] text-muted-foreground bg-background/50 px-1 py-0.5 rounded">
                   {completedSteps}/{totalSteps}
                 </span>
               )}
@@ -81,28 +81,28 @@ export function ThinkingIndicator({ steps, isActive, elapsedTime = 0 }: Thinking
               )}
             </div>
             {isOpen ? (
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform" />
+              <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform" />
             ) : (
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground transition-transform" />
+              <ChevronRight className="h-3 w-3 text-muted-foreground transition-transform" />
             )}
           </Button>
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="border-t border-border/30 px-3 py-2 space-y-1.5 bg-background/20">
+          <div className="border-t border-border/20 px-2.5 py-1.5 space-y-1 bg-background/10">
             {steps.map((step) => (
               <div
                 key={step.id}
-                className="flex items-start gap-2 text-xs animate-fade-in py-1.5 px-2 rounded-md hover:bg-muted/30 transition-colors"
+                className="flex items-start gap-1.5 text-xs animate-fade-in py-1 px-1.5 rounded hover:bg-muted/20 transition-colors"
               >
                 <div className="mt-0.5 flex-shrink-0">{getStatusIcon(step.status)}</div>
                 <span
                   className={
                     step.status === "error"
-                      ? "text-destructive text-xs"
+                      ? "text-destructive text-[11px]"
                       : step.status === "complete"
-                      ? "text-muted-foreground text-xs"
-                      : "text-foreground text-xs"
+                      ? "text-muted-foreground text-[11px]"
+                      : "text-foreground text-[11px]"
                   }
                 >
                   {step.content}
